@@ -15,16 +15,16 @@ int ft_popen(const char *file, char *const argv[], char type)
 	{
 		close(fds[0]);
 		close(fds[1]);
-		rturn (-1);
+		return (-1);
 	}
 	if (pid == 0)
 	{
-		if (type = 'r')
+		if (type == 'r')
 		{
 			if (dup2(fds[1], STDOUT_FILENO) == -1)
 				exit (1);
 		}
-		if (type = 'w')
+		else if (type == 'w')
 		{
 			if (dup2(fds[0], STDIN_FILENO) == -1)
 				exit (1);
@@ -45,4 +45,5 @@ int ft_popen(const char *file, char *const argv[], char type)
 		return (fds[1]);
 	}
 
+	return (-1);
 }
