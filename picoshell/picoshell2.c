@@ -17,6 +17,18 @@ int picoshell(char **cmds[])
 	i = 0;
 	while(cmds[i])
 	{
+		if (cmds[i + 1] && pipe(fds) == -1)
+			return (-1);
+		pid = fork();
+		if (pid == -1)
+		{
+			if (cmds[i + 1])
+			{
+				close(fds[0]);
+				close(fds[1]);
+			}
+			return (1)
+		}
 		i++;
 	}
 	while (wait(&status) != -1)
