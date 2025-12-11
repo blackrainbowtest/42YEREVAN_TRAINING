@@ -5,12 +5,12 @@
 
 int picoshell(char **cmds[])
 {
-	int		exit_code;
-	int		fds[2];
 	pid_t	pid;
-	int		status;
-	int		prev_fd;
+	int		fds[2];
 	int		i;
+	int		exit_code;
+	int		prev_fd;
+	int		status;
 
 	exit_code = 0;
 	prev_fd = -1;
@@ -35,24 +35,24 @@ int picoshell(char **cmds[])
 			{
 				if (dup2(prev_fd, STDIN_FILENO) == -1)
 					exit (1);
-				close(prev_fd);
+				close (prev_fd);
 			}
 			if (cmds[i + 1])
 			{
 				close(fds[0]);
 				if (dup2(fds[1], STDOUT_FILENO) == -1)
-					exit (-1);
-				close(fds[1]); 
+					exit(1);
+				close(fds[1]);
 			}
 			execvp(cmds[i][0], cmds[i]);
-			exit(1);
+			exit (1);
 		}
 		if (prev_fd != -1)
 			close(prev_fd);
 		if (cmds[i + 1])
 		{
 			close(fds[1]);
-			prev_fd = fds[0]
+			prev_fd = fds[0];
 		}
 		i++;
 	}
@@ -64,15 +64,14 @@ int picoshell(char **cmds[])
 	return (exit_code);
 }
 
-int main(void)
+int	main(void)
 {
-    char *cmd1[] = {"ls", "-l", NULL};
-    char *cmd2[] = {"grep", "c", NULL};
-    char *cmd3[] = {"wc", "-l", NULL};
+	char	*cmd1[] = {};
+	char	*cmd2[] = {};
+	char	*cmd3[] = {};
 
-    char **cmds[] = {cmd1, cmd2, cmd3, NULL};
-
-    int res = picoshell(cmds);
-    printf("exit = %d\n", res);
-    return 0;
+	char	**cmds[] = {cmd1, cmd2, cmd3, NULL};
+	int	res = picoshell(cmds);
+	printf("exit_code %d\n", res);
+	return (1);
 }
