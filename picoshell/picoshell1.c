@@ -31,7 +31,21 @@ int picoshell(char **cmds[])
 		}
 		if (pid == 0)
 		{
-
+			if (prev_fds != -1)
+			{
+				if (dup2(prev_fds, STDIN_FILENO) == -1)
+					exit (1);
+				close(prev_fds);
+			}
+			if (cmds[i + 1])
+			{
+				close(fds[0]);
+				if (dup2(fds[1], STDOUT_FILENO) == -1)
+					exit (1);
+				close(fds[1]);
+			}
+			execvp(cmds[i][0], cmds[i]);
+			exit (1);
 		}
 		if (prev_fds != -1)
 			close(prev_fds);
