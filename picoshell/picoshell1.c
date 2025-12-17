@@ -7,15 +7,15 @@ int	picoshell(char **cmds[])
 {
 	pid_t	pid;
 	int		i;
-	int		exit_code;
 	int		status;
+	int		exit_code;
 	int		prev_fds;
 	int		fds[2];
 
 	i = 0;
 	exit_code = 0;
 	prev_fds = -1;
-	while(cmds[i])
+	while (cmds[i])
 	{
 		if (cmds[i + 1] && pipe(fds) == -1)
 			return (-1);
@@ -35,7 +35,7 @@ int	picoshell(char **cmds[])
 			{
 				if (dup2(prev_fds, STDIN_FILENO) == -1)
 					exit (1);
-				close(prev_fds);
+				close (prev_fds);
 			}
 			if (cmds[i + 1])
 			{
@@ -44,21 +44,21 @@ int	picoshell(char **cmds[])
 					exit (1);
 				close(fds[1]);
 			}
-			execvp(cmds[i][0] , cmds[i]);
+			execvp(cmds[i][0], cmds[i]);
 			exit (1);
 		}
 		if (prev_fds != -1)
-			close (prev_fds);
+			close(prev_fds);
 		if (cmds[i + 1])
 		{
 			close(fds[1]);
-			prev_fds(fds[0]);
+			prev_fds = fds[0];
 		}
 		i++;
 	}
 	while (wait(&status) != -1)
 	{
-		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+		if (WIFEXITED(status) && WEXITSTATUS != 0)
 			exit_code = 1;
 	}
 	return (exit_code);
