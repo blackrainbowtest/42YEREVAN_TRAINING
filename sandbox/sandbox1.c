@@ -14,3 +14,39 @@ void alram_handler(int sig)
 {
 	(void)sig;
 }
+
+int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
+{
+	struct	sigaction sa;
+	pid_t	pid;
+	int		status;
+
+	sa.sa_handler = alarm_handler;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	sigaction(SIGALRM, &sa, NULL);
+
+	pid = fork();
+	if (pid == -1)
+		return (-1);
+	if (pid == 0)
+	{
+		f();
+		exit (0);
+	}
+	child_pid = pid;
+	alarm(timeout);
+	if (waitpid(pid, &status, 0) == -1)
+	{
+
+	}
+	if (WIFEXITED(status))
+	{
+
+	}
+	if (WIFSIGNALED(status))
+	{
+		
+	}
+	return (-1);
+}
