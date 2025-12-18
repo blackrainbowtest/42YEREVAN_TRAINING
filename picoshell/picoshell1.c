@@ -18,7 +18,7 @@ int	picoshell(char **cmds[])
 	while (cmds[i])
 	{
 		if (cmds[i + 1] && pipe(fds) == -1)
-			return (-1);
+			return (1);
 		pid = fork();
 		if (pid == -1)
 		{
@@ -27,7 +27,7 @@ int	picoshell(char **cmds[])
 				close(fds[0]);
 				close(fds[1]);
 			}
-			return (-1);
+			return (1);
 		}
 		if (pid == 0)
 		{
@@ -35,7 +35,7 @@ int	picoshell(char **cmds[])
 			{
 				if (dup2(prev_fds, STDIN_FILENO) == -1)
 					exit (1);
-				close (prev_fds);
+				close(prev_fds);
 			}
 			if (cmds[i + 1])
 			{
@@ -58,8 +58,8 @@ int	picoshell(char **cmds[])
 	}
 	while (wait(&status) != -1)
 	{
-		if (WIFEXITED(status) && WEXITSTATUS != 0)
-			exit_code = 1;
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			exit_code = -1;
 	}
 	return (exit_code);
 }
@@ -73,5 +73,5 @@ int	main(void)
 	char	**cmds[] = {cmd1, cmd2, cmd3, NULL};
 	int		res = picoshell(cmds);
 	printf("exit_code %d\n", res);
-	return (0);
+	return (1);
 }
