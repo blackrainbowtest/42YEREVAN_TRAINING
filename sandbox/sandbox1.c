@@ -10,7 +10,7 @@
 
 static pid_t child_pid;
 
-void alram_handler(int sig)
+void alarm_handler(int sig)
 {
 	(void)sig;
 }
