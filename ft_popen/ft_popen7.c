@@ -3,8 +3,8 @@
 
 int ft_popen(const char *file, char *const argv[], char type)
 {
-	int		fds[2];
 	pid_t	pid;
+	int		fds[2];
 
 	if (!file || !argv || (type != 'r' && type != 'w'))
 		return (-1);
@@ -22,17 +22,17 @@ int ft_popen(const char *file, char *const argv[], char type)
 		if (type == 'r')
 		{
 			if (dup2(fds[1], STDOUT_FILENO) == -1)
-				exit(1);
+				_exit (1);
 		}
 		else
 		{
 			if (dup2(fds[0], STDIN_FILENO) == -1)
-				exit(1);
+				_exit (1);
 		}
 		close(fds[0]);
 		close(fds[1]);
 		execvp(file, argv);
-		exit (1);
+		_exit (1);
 	}
 	if (type == 'r')
 	{
