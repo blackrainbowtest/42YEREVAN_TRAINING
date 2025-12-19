@@ -8,9 +8,9 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-static pid_t child_pid;
+static	pid_t child_pid;
 
-void alarm_handler(int sig)
+void	alarm_handler(int sig)
 {
 	(void)sig;
 }
