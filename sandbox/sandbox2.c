@@ -4,13 +4,13 @@
 #include <stdbool.h>
 #include <signal.h>
 #include <errno.h>
-#include <string.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <string.h>
 
-static pid_t	child_pid;
+static pid_t child_pid;
 
-void alarm_handler(int	sig)
+void alarm_handler(int sig)
 {
 	(void)sig;
 }
@@ -18,8 +18,8 @@ void alarm_handler(int	sig)
 int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
 {
 	pid_t	pid;
-	struct sigaction sa;
 	int		status;
+	struct sigaction sa;
 
 	sa.sa_handler = alarm_handler;
 	sa.sa_flags = 0;
@@ -31,17 +31,17 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
 	if (pid == 0)
 	{
 		f();
-		_exit (0);
+		exit (0);
 	}
 	child_pid = pid;
 	alarm(timeout);
-	if (waitpid(pid, &status, 0) == -1)
+	if (waitpid(pid, &status, NULL) == -1)
 	{
 
 	}
 	if (WIFEXITED(status))
 	{
-
+		
 	}
 	if (WIFSIGNALED(status))
 	{
