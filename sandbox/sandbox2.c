@@ -27,13 +27,14 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
 	sigaction(SIGALRM, &sa, NULL);
 	pid = fork();
 	if (pid == -1)
-		return (-1);
+	{
+		return (-1)
+	}
 	if (pid == 0)
 	{
 		f();
 		exit (0);
 	}
-	child_pid = pid;
 	alarm(timeout);
 	if (waitpid(pid, &status, NULL) == -1)
 	{
