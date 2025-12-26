@@ -5,12 +5,12 @@
 
 int	picoshell(char **cmds[])
 {
-	pid_t	pid;
-	int		i;
-	int		status;
-	int		exit_code;
-	int		prev_fds;
 	int		fds[2];
+	int		prev_fds;
+	int		exit_code;
+	int		status;
+	int		i;
+	pid_t	pid;
 
 	i = 0;
 	exit_code = 0;
@@ -34,18 +34,18 @@ int	picoshell(char **cmds[])
 			if (prev_fds != -1)
 			{
 				if (dup2(prev_fds, STDIN_FILENO) == -1)
-					_exit (1);
+					exit(1);
 				close(prev_fds);
 			}
 			if (cmds[i + 1])
 			{
 				close(fds[0]);
 				if (dup2(fds[1], STDOUT_FILENO) == -1)
-					_exit (1);
+					exit(1);
 				close(fds[1]);
 			}
 			execvp(cmds[i][0], cmds[i]);
-			_exit (1);
+			exit(1);
 		}
 		if (prev_fds != -1)
 			close(prev_fds);
@@ -58,7 +58,7 @@ int	picoshell(char **cmds[])
 	}
 	while (wait(&status) != -1)
 	{
-		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+		if (WEXITED(status) && WEXITSTATUS(status) != 0)
 			exit_code = 1;
 	}
 	return (exit_code);
