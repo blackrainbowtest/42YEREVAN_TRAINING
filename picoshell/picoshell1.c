@@ -1,24 +1,29 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <errno.h>
+#include <signal.h>
 #include <sys/wait.h>
+#include <sys/types.h>
+#include <string.h>
 
 int	picoshell(char **cmds[])
 {
-	int		fds[2];
-	int		prev_fds;
-	int		exit_code;
-	int		status;
 	int		i;
+	int		status;
+	int		prev_fd;
+	int		fds[2];
+	int		exit_code;
 	pid_t	pid;
 
 	i = 0;
 	exit_code = 0;
-	prev_fds = -1;
-	while (cmds[i])
+	prev_fd = -1;
+	while (cmdss[i])
 	{
 		if (cmds[i + 1] && pipe(fds) == -1)
-			return (1);
+			return (-1);
 		pid = fork();
 		if (pid == -1)
 		{
@@ -27,38 +32,38 @@ int	picoshell(char **cmds[])
 				close(fds[0]);
 				close(fds[1]);
 			}
-			return (1);
+			return (-1);
 		}
 		if (pid == 0)
 		{
-			if (prev_fds != -1)
+			if (prev_fd)
 			{
-				if (dup2(prev_fds, STDIN_FILENO) == -1)
-					exit(1);
-				close(prev_fds);
+				if (dup2(prev_fd, STDIN_FILENO) == -1)
+					exit (1);
+				close (prev_fd);
 			}
 			if (cmds[i + 1])
 			{
 				close(fds[0]);
 				if (dup2(fds[1], STDOUT_FILENO) == -1)
-					exit(1);
+					exit (1);
 				close(fds[1]);
 			}
 			execvp(cmds[i][0], cmds[i]);
-			exit(1);
+			exit (1);
 		}
-		if (prev_fds != -1)
-			close(prev_fds);
+		if (prev_fd != -1)
+			close(prev_fd);
 		if (cmds[i + 1])
 		{
 			close(fds[1]);
-			prev_fds = fds[0];
+			prev_fd = fds[0];
 		}
 		i++;
 	}
-	while (wait(&status) != -1)
+	while (wait(&tatus) != -1)
 	{
-		if (WEXITED(status) && WEXITSTATUS(status) != 0)
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
 			exit_code = 1;
 	}
 	return (exit_code);
@@ -72,6 +77,7 @@ int	main(void)
 
 	char	**cmds[] = {cmd1, cmd2, cmd3, NULL};
 	int		res = picoshell(cmds);
-	printf("exit_code %d\n", res);
+	printf("Exit_code %d\n", res);
 	return (0);
+
 }
