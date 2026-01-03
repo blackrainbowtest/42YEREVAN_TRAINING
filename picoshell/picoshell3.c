@@ -1,24 +1,20 @@
-#include <stdio.h>
 #include <unistd.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 
 int	picoshell(char **cmds[])
 {
-	pid_t	pid;
-	int		i;
-	int		exit_code;
-	int		status;
+	int		i = -1;
+	int		prev_fds = -1;
 	int		fds[2];
-	int		prev_fd;
 
-	exit_code = 0;
-	i = 0;
-	prev_fd = -1;
-	while (cmds[i])
+	pid_t	pid;
+
+	while(cmds[++i])
 	{
 		if (cmds[i + 1] && pipe(fds) == -1)
-			return (-1);
+			return (1);
 		pid = fork();
 		if (pid == -1)
 		{
@@ -27,26 +23,52 @@ int	picoshell(char **cmds[])
 				close(fds[0]);
 				close(fds[1]);
 			}
+			if (prev_fds != -1)
+				close(prev_fds);
 			return (1);
 		}
-		i++;
+		if (pid == 0)
+		{
+			if (prev_fds != -1)
+			{
+				if (dup2(prev_fds, 0) == -1)
+					exit (1);
+				close(prev_fds);
+			}
+			if (cmds[i + 1])
+			{
+				if (dup2(fds[1], 1) == -1)
+					exit(1);
+				close(fds[0]);
+				close(fds[1]);
+			}
+			execvp(cmds[i][0], cmds[i]);
+			exit(1);
+		}
+		if (prev_fds != -1)
+		{
+			close(prev_fds);
+		}
+		if (cmds[i + 1])
+		{
+			close(fds[1]);
+			prev_fds = fds[0];
+		}
 	}
-	while (wait(&status != -1))
-	{
-		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-			exit_code = 1;
-	}
-	return (exit_code);
+	while (wait(NULL) > 0)
+		;
+	return (0);
 }
 
-int	main(void)
+int main(void)
 {
-	char	*cmd1[] = {"ls", "-l", NULL};
-	char	*cmd2[] = {"grep", "c", NULL};
-	char	*cmd3[] = {"wc", "-l", NULL};
+	char *cmd1[] = {"ls", "-l", NULL};
+	char *cmd2[] = {"grep", "c", NULL};
+	char *cmd3[] = {"wc", "-l", NULL};
 
-	char	**cmds[] = {cmd1, cmd2, cmd3, NULL};
-	int	res = picoshell(cmds);
+	char **cmds[] = {cmd1, cmd2, cmd3, NULL};
+
+	int res = picoshell(cmds);
 	printf("exit_code: %d\n", res);
 	return (0);
 }
