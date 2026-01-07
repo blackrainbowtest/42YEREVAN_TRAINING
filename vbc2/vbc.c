@@ -64,7 +64,7 @@ int accept(char **s, char c)
     return 0;
 }
 
-int expect(char **s, char c)
+int expect(char **s, char c) // ls function not need
 {
     if (accept(s, c))
         return 1;
@@ -168,9 +168,11 @@ node *parse_addition(char **s)
         tmp.r = right;
         tmp.val = 0;  // No usado en nodos operadores
         
+        node *old_left = left;
         left = new_node(tmp);
         if (!left)
         {
+            destroy_tree(old_left);
             destroy_tree(right);
             return NULL;
         }

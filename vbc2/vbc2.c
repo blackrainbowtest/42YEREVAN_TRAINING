@@ -9,6 +9,9 @@ typedef struct node {
 	struct node *r;
 } node;
 
+node *new_node(node n);
+void	destroy_tree(node *n);
+
 node *new_node(node n)
 {
 	node *ret = calloc(1, sizeof(node));
@@ -16,4 +19,16 @@ node *new_node(node n)
 		return (NULL);
 	*ret = n;
 	return (ret);
+}
+
+void	destroy_tree(node *n)
+{
+	if (!n)
+		return ;
+	if (n->type != VAL)
+	{
+		destroy_tree(n->l);
+		destroy_tree(n->r);
+	}
+	free(n);
 }
