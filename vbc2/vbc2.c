@@ -56,6 +56,8 @@ int		accept(char **s, char c)
 
 int	eval_tree(node *tree)
 {
+	if (!tree)
+		return (0);
 	switch(tree->type)
 	{
 		case ADD:
