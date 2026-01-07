@@ -3,7 +3,7 @@
 #include <ctype.h>
 
 typedef struct node {
-	enum { ADD, MULTI, VAL} type;
+	enum { ADD, MUL, VAL} type;
 	int val;
 	struct node *l;
 	struct node *r;
@@ -62,7 +62,7 @@ int	eval_tree(node *tree)
 	{
 		case ADD:
 			return eval_tree(tree->l) + eval_tree(tree->r);
-		case MULTI:
+		case MUL:
 			return eval_tree(tree->l) * eval_tree(tree->r);
 		case VAL:
 			return tree->val;
