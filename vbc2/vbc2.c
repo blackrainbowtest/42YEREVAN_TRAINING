@@ -9,10 +9,11 @@ typedef struct node {
 	struct node *r;
 } node;
 
-node *new_node(node n);
+node	*new_node(node n);
 void	destroy_tree(node *n);
+void	unexpected(char c);
 
-node *new_node(node n)
+node	*new_node(node n)
 {
 	node *ret = calloc(1, sizeof(node));
 	if (!ret)
@@ -33,7 +34,7 @@ void	destroy_tree(node *n)
 	free(n);
 }
 
-void unexpected(char c)
+void	unexpected(char c)
 {
 	if (c)
 		printf("Unexpected token '%c'\n", c);
