@@ -12,6 +12,8 @@ typedef struct node {
 node	*new_node(node n);
 void	destroy_tree(node *n);
 void	unexpected(char c);
+int		accept(char **s, char c);
+int		eval_tree(node *tree);
 
 node	*new_node(node n)
 {
@@ -40,4 +42,28 @@ void	unexpected(char c)
 		printf("Unexpected token '%c'\n", c);
 	else
 		printf("Unexpected end of input\n");
+}
+
+int		accept(char **s, char c)
+{
+	if (**s == c)
+	{
+		(*s)++;
+		return (1);
+	}
+	return (0);
+}
+
+int	eval_tree(node *tree)
+{
+	switch(tree->type)
+	{
+		case ADD:
+			return eval_tree(tree->l) + eval_tree(tree->r);
+		case MULTI:
+			return eval_tree(tree->l) * eval_tree(tree->r);
+		case VAL:
+			return tree->val;
+	}
+	return (0);
 }
