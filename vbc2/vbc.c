@@ -73,7 +73,7 @@ int expect(char **s, char c) // ls function not need
 }
 
 node *parse_primary(char **s)
-{
+{8
     node *res;
     node tmp;
     

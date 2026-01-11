@@ -3,20 +3,15 @@
 #include <ctype.h>
 
 typedef struct node {
-	enum { 
-		MUL,
+	enum {
 		ADD,
+		MUL,
 		VAL
 	} type;
+	int val;
 	struct node *l;
 	struct node *r;
-	int val;
 } node;
-
-node *new_node(node n);
-void destroy_tree(node *n);
-void unexpected(char c);
-int accept(char **s, char c);
 
 node *new_node(node n)
 {
@@ -42,9 +37,10 @@ void destroy_tree(node *n)
 void unexpected(char c)
 {
 	if (c)
-		printf("Unexpected token '%c'", c);
+		printf("Unexpected token '%c'\n", c);
 	else
 		printf("Unexpected end of input\n");
+	return ;
 }
 
 int accept(char **s, char c)
