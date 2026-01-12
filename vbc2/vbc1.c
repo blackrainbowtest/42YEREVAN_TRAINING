@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-typedef struct node {
+typedef struct node
+{
 	enum {
 		ADD,
 		MUL,
@@ -12,6 +13,8 @@ typedef struct node {
 	struct node *l;
 	struct node *r;
 } node;
+
+node *new_node(node n);
 
 node *new_node(node n)
 {
@@ -31,24 +34,14 @@ void destroy_tree(node *n)
 		destroy_tree(n->l);
 		destroy_tree(n->r);
 	}
-	free(n);
+	free (n);
+	return ;
 }
 
 void unexpected(char c)
 {
 	if (c)
-		printf("Unexpected token '%c'\n", c);
+		printf();
 	else
-		printf("Unexpected end of input\n");
-	return ;
-}
-
-int accept(char **s, char c)
-{
-	if (**s == c)
-	{
-		(*s)++;
-		return (1);
-	}
-	return (0);
+		printf();
 }
