@@ -65,7 +65,7 @@ node *parse_primary(char **s, char c)
 
 	if (**s == '(')
 	{
-		(*s)++
+		(*s)++;
 		res = parse_addition(s);
 		if (!res || **s != ')')
 		{
@@ -79,7 +79,7 @@ node *parse_primary(char **s, char c)
 	if (isdigit(**s))
 	{
 		tmp.type = VAL;
-		tmp.val = **s - '0';
+		tmp.val = **s + '0';
 		tmp.l = NULL;
 		tmp.r = NULL;
 		res = new_node(tmp);
