@@ -4,21 +4,15 @@
 
 typedef struct node
 {
-	enum {
+	eval {
 		ADD,
 		MUL,
 		VAL
-	} type;
+	}
 	int val;
 	struct node *l;
 	struct node *r;
 } node;
-
-node *new_node(node n);
-void destroy_tree(node *n);
-void unexpected(char c);
-int accept(char **s, char c);
-node *parse_primary(char **s, char c);
 
 node *new_node(node n)
 {
@@ -28,10 +22,11 @@ node *new_node(node n)
 	*res = n;
 	return (res);
 }
+
 void destroy_tree(node *n)
 {
 	if (!n)
-		return ;
+		return (NULL);
 	if (n->type != VAL)
 	{
 		destroy_tree(n->l);
@@ -55,10 +50,11 @@ int accept(char **s, char c)
 		(*s)++;
 		return (1);
 	}
+	unexpected(**s);
 	return (0);
 }
 
-node *parse_primary(char **s, char c)
+node *parse_primary(char **s)
 {
 	node *res;
 	node  tmp;
@@ -79,10 +75,12 @@ node *parse_primary(char **s, char c)
 	if (isdigit(**s))
 	{
 		tmp.type = VAL;
-		tmp.val = **s + '0';
+		tmp.val = **s - '0';
 		tmp.l = NULL;
 		tmp.r = NULL;
 		res = new_node(tmp);
+		if (!res)
+			return (NULL);
 		(*s)++;
 		return (res);
 	}
@@ -92,35 +90,10 @@ node *parse_primary(char **s, char c)
 
 node *parse_multiplication(char **s)
 {
-	node *left;
-	node *right;
-	node *new;
-	node tmp;
 
-	left = parse_primary(s);
-	if (!left)
-		return (NULL);
-	while (**s == '*')
-	{
-		(*s)++;
-		right = parse_primary(s);
-		if (!right)
-		{
-			destroy_tree(left);
-			return (NULL);
-		}
-		tmp.type = MUL;
-		tmp.l = left;
-		tmp.r = right;
-		tmp.val = 0;
-		new = new_node(tmp);
-		if (!new)
-		{
-			destroy_tree(left);
-			destroy_tree(right);
-			return (NULL);
-		}
-		left = new;
-	}
-	return left;
+}
+
+node *parse_addition(char **s)
+{
+
 }

@@ -188,7 +188,7 @@ node *parse_expression(char **s)
     if (!ret)
         return NULL;
     
-    // Verificar que se consumió toda la entrada
+    // Verify that the entire entry was consumed
     if (**s)
     {
         destroy_tree(ret);
