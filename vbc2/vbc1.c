@@ -90,10 +90,98 @@ node *parse_primary(char **s)
 
 node *parse_multiplication(char **s)
 {
+	node *res;
+	node *left;
+	node *right;
+	node  tmp;
 
+	left = parse_primary(s);
+	if (!left)
+		return (NULL);
+	while (**s == '*')
+	{
+		(*s)++;
+		right = parse_primary(s);
+		if (!right)
+		{
+			destroy_tree(left);
+			return (NULL);
+		}
+		tmp.type = MUL;
+		tmp.val = 0;
+		tmp.l = left;
+		tmp.r = right;
+		new = new_node(tmp);
+		if (!new)
+		{
+			destroy_tree(left);
+			destroy_tree(right);
+			return (NULL);
+		}
+		left = new;
+	}
+	return (left);
 }
 
 node *parse_addition(char **s)
 {
+	node *res;
+	node *left;
+	node *right;
+	node  tmp;
 
+	left = parse_multiplication(s);
+	if (!left)
+		return (NULL);
+	while (**s == '+')
+	{
+		(*s)++;
+		right = parse_multiplication(s);
+		if (!right)
+		{
+			destroy_tree(left);
+			return (NULL);
+		}
+		tmp.type = ADD;
+		tmp.val = 0;
+		tmp.l = left;
+		tmp.r = right;
+		new = new_node(tmp);
+		if (!new)
+		{
+			destroy_tree(left);
+			destroy_tree(right);
+			return (NULL);
+		}
+		left = new;
+	}
+	return (left);
+}
+
+node *parse_expression(char **s)
+{
+	node *res = parse_addition(s);
+	if (!res)
+		return (NULL);
+	if (**s)
+	{
+		destroy_tree(res);
+		unexpected(**s);
+		return (NULL);
+	}
+	return (res);
+}
+
+int eval_tree(node *tree)
+{
+	switch (tree->type)
+	{
+		case ADD:
+			return eval_tree(tree.r) + eval_tree(tree.r);
+		case MUL:
+			return eval_tree(tree.l) * eval_tree(tree.r);
+		case VAL:
+			return tree->val;
+	}
+	return 0;
 }
