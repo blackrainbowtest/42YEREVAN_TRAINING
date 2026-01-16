@@ -5,16 +5,13 @@
 
 int	picoshell(char **cmds[])
 {
-	int		i;
+	int		i = 0;
+	int		exit_code = 0;
+	int		prev_fds = -1;
 	int		status;
-	int		exit_code;
-	int		prev_fds;
 	int		fds[2];
 	pid_t	pid;
 
-	i = 0;
-	exit_code = 0;
-	prev_fds = -1;
 	while (cmds[i])
 	{
 		if (cmds[i + 1] && pipe(fds) == -1)
@@ -74,5 +71,4 @@ int	main(void)
 	int		res = picoshell(cmds);
 	printf("Exit_code %d\n", res);
 	return (0);
-
 }
