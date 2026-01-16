@@ -93,6 +93,7 @@ node *parse_multiplication(char **s)
 	node *res;
 	node *left;
 	node *right;
+	node *new;
 	node  tmp;
 
 	left = parse_primary(s);
