@@ -4,11 +4,11 @@
 
 typedef struct node
 {
-	eval {
+	enum {
 		ADD,
 		MUL,
 		VAL
-	}
+	} type;
 	int val;
 	struct node *l;
 	struct node *r;
@@ -26,7 +26,7 @@ node *new_node(node n)
 void destroy_tree(node *n)
 {
 	if (!n)
-		return (NULL);
+		return ;
 	if (n->type != VAL)
 	{
 		destroy_tree(n->l);
@@ -43,18 +43,7 @@ void unexpected(char c)
 		printf("Unexpected end of input\n");
 }
 
-int accept(char **s, char c)
-{
-	if (**s == c)
-	{
-		(*s)++;
-		return (1);
-	}
-	unexpected(**s);
-	return (0);
-}
-
-node *parse_primary(char **s)
+node *parce_primary(char **s)
 {
 	node *res;
 	node  tmp;
@@ -94,15 +83,15 @@ node *parse_multiplication(char **s)
 	node *left;
 	node *right;
 	node *new;
-	node  tmp;
+	node tmp;
 
-	left = parse_primary(s);
+	left = parce_primary(s);
 	if (!left)
 		return (NULL);
 	while (**s == '*')
 	{
 		(*s)++;
-		right = parse_primary(s);
+		right = parce_primary(s);
 		if (!right)
 		{
 			destroy_tree(left);
@@ -129,7 +118,8 @@ node *parse_addition(char **s)
 	node *res;
 	node *left;
 	node *right;
-	node  tmp;
+	node *new;
+	node tmp;
 
 	left = parse_multiplication(s);
 	if (!left)
@@ -162,7 +152,7 @@ node *parse_addition(char **s)
 node *parse_expression(char **s)
 {
 	node *res = parse_addition(s);
-	if (!res)
+	if (!ret)
 		return (NULL);
 	if (**s)
 	{
@@ -173,16 +163,29 @@ node *parse_expression(char **s)
 	return (res);
 }
 
-int eval_tree(node *tree)
+int	eval_tree(node *tree)
 {
 	switch (tree->type)
 	{
 		case ADD:
-			return eval_tree(tree.r) + eval_tree(tree.r);
+			return eval_tree(tree->l) + eval_tree(tree->r);
 		case MUL:
-			return eval_tree(tree.l) * eval_tree(tree.r);
+			return	eval_tree(tree->l) * eval_tree(tree->r);
 		case VAL:
 			return tree->val;
 	}
-	return 0;
+	return (0);
+}
+
+int main(int argc, char **argv)
+{
+	if (argc != 2)
+		return (1);
+	char *input = argv[1];
+	node *tree = parse_expression(&argv[1]);
+	if (!tree)
+		return (1);
+	printf("%d\n", eval_tree(tree));
+	destroy_tree(tree);
+	return (0);
 }
