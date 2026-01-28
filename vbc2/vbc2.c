@@ -17,3 +17,15 @@ node *new_node(node n)
 	*ret = n;
 	return (ret);
 }
+void	destroy_tree(node *n)
+{
+	if (!n)
+		return ;
+	if (n->type != VAL)
+	{
+		destroy_tree(n->l);
+		destroy_tree(n->r);
+	}
+	free(n);
+}
+
